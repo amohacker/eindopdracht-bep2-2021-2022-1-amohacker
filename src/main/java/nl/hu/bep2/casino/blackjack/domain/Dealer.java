@@ -1,32 +1,40 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Persoon {
+@Entity
+public class Dealer implements Serializable {
     @Id
-    private Long gameId;
-
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "gameId")
+    @GeneratedValue
+    private Long id;
+    @OneToOne(mappedBy = "dealer")
     private Game game;
-    @Transient
+    @OneToOne(cascade = CascadeType.ALL)
     private Hand hand = new Hand();
-    @Transient
     private boolean standing = false;
 
-    public Persoon(Deck deck) {
+    public Dealer(Deck deck) {
         this.hand = new Hand(deck);
     }
 
-    public Persoon() {
+    public Dealer() {
+
     }
 
     public void draw() {
         hand.draw();
         standing = false;
+    }
+
+    public void draw(int number) {
+        int i = 0;
+        while (i<number) {
+            hand.draw();
+            i++;
+        }
     }
 
     public void stand(){
@@ -50,16 +58,11 @@ public abstract class Persoon {
     }
 
     public int getAmountOfCards() {
-        return getDeck().cards.size();
+        return getCards().size();
     }
 
-    @OneToMany
     public List<Card> getCards(){
         return hand.getCards();
-    }
-
-    public void setCards(ArrayList<Card> cards){
-        hand.setCards(cards);
     }
 
     public Game getGame() {
@@ -69,7 +72,6 @@ public abstract class Persoon {
     public void setGame(Game game) {
         this.game = game;
     }
-
 
     public void setDeck(Deck deck) {
         this.hand.setDeck(deck);
@@ -83,4 +85,5 @@ public abstract class Persoon {
                 ", standing=" + standing +
                 '}';
     }
+
 }

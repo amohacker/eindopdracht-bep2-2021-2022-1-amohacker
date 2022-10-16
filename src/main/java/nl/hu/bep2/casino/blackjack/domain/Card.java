@@ -2,9 +2,16 @@ package nl.hu.bep2.casino.blackjack.domain;
 
 import org.springframework.transaction.ReactiveTransaction;
 
-public class Card {
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.io.Serializable;
+import java.util.Objects;
+
+public class Card implements Serializable {
     Rank rank;
     Suit suit;
+
+    public Card(){}
     public Card (Rank rank, Suit suit){
         this.rank = rank;
         this.suit = suit;
@@ -29,12 +36,9 @@ public class Card {
             case NINE:
                 return 9;
             case TEN:
-                return 10;
-            case J:
-                return 10;
-            case Q:
-                return 10;
-            case K:
+            case JACK:
+            case QUEEN:
+            case KING:
                 return 10;
             case ACE:
                 return 11;
@@ -42,9 +46,7 @@ public class Card {
         return 0;
     }
     public boolean isAce(){
-        if (rank.equals(Rank.ACE))
-            return true;
-        return false;
+        return rank.equals(Rank.ACE);
     }
 
     public enum Rank {
@@ -57,9 +59,9 @@ public class Card {
         EIGHT,
         NINE,
         TEN,
-        J,
-        Q,
-        K,
+        JACK,
+        QUEEN,
+        KING,
         ACE
     }
     public enum Suit {
@@ -77,8 +79,29 @@ public class Card {
         return suit;
     }
 
+    public void setRank(Rank rank){
+        this.rank = rank;
+    }
+
+    public void setSuit(Suit suit){
+        this.suit = suit;
+    }
+
     @Override
     public String toString() {
         return rank + " of " + suit;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return rank == card.rank && suit == card.suit;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rank, suit);
     }
 }

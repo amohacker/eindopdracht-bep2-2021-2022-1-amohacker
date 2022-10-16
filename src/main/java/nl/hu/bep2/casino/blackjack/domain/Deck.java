@@ -1,6 +1,7 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Deck {
     ArrayList<Card> cards;
@@ -21,5 +22,11 @@ public class Deck {
         //Removes drawn card from deck and then returns it
         cards.remove(drawn);
         return drawn;
+    }
+
+    public void removeCards(List<Card> toremove){
+        for (Card card : toremove) {
+            cards.remove(card);
+        }
     }
 }

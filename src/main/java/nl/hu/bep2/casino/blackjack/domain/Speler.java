@@ -1,35 +1,55 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.collection.internal.PersistentBag;
+
 import javax.persistence.*;
+import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Persoon {
+@Entity
+public class Speler implements Serializable {
     @Id
-    private Long gameId;
+    @GeneratedValue
+    private Long id;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "gameId")
+    @OneToOne(mappedBy = "speler")
     private Game game;
-    @Transient
+    @OneToOne(cascade = CascadeType.ALL)
     private Hand hand = new Hand();
-    @Transient
     private boolean standing = false;
 
-    public Persoon(Deck deck) {
+
+    public Speler(Deck deck) {
         this.hand = new Hand(deck);
+        this.standing = false;
+//        handToCards();
     }
 
-    public Persoon() {
+    public Speler() {
+//        cardsToHand();
     }
 
     public void draw() {
         hand.draw();
-        standing = false;
+    }
+
+    public void draw(int number) {
+        int i = 0;
+        while (i<number) {
+            hand.draw();
+            i++;
+        }
     }
 
     public void stand(){
+        standing = true;
+    }
+
+    public void doubleDown(){
+        draw();
         standing = true;
     }
 
@@ -38,6 +58,7 @@ public abstract class Persoon {
     }
 
     public int score(){
+//        cardsToHand();
         return hand.score();
     }
 
@@ -50,22 +71,12 @@ public abstract class Persoon {
     }
 
     public int getAmountOfCards() {
-        return getDeck().cards.size();
+        return getCards().size();
     }
 
-    @OneToMany
     public List<Card> getCards(){
         return hand.getCards();
     }
-
-    public void setCards(ArrayList<Card> cards){
-        hand.setCards(cards);
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
     public void setGame(Game game) {
         this.game = game;
     }
