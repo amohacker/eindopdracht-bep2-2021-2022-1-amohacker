@@ -9,6 +9,10 @@ public class GameFactory {
     private ArrayList<Regel> rules;
     private String username;
 
+    private int goalScore = 21;
+
+    private int numberOfDecks = 1;
+
     public GameFactory setBet(long bet) {
         this.bet = bet;
         return this;
@@ -23,12 +27,22 @@ public class GameFactory {
         return this;
     }
 
+    public GameFactory setGoalScore(int goalScore) {
+        this.goalScore = goalScore;
+        return this;
+    }
+
+    public GameFactory setNumberOfDecks(int numberOfDecks) {
+        this.numberOfDecks = numberOfDecks;
+        return this;
+    }
+
     public GameFactory setUsername(String username) {
         this.username = username;
         return this;
     }
 
     public Game build(){
-        return new Game(new Speler(new Deck()), bet, rules, username);
+        return new Game(bet, rules, username, numberOfDecks, goalScore);
     }
 }

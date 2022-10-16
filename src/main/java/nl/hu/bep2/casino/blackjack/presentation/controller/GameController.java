@@ -2,11 +2,9 @@ package nl.hu.bep2.casino.blackjack.presentation.controller;
 
 import nl.hu.bep2.casino.blackjack.application.GameService;
 import nl.hu.bep2.casino.blackjack.domain.BlackjackUserView;
-import nl.hu.bep2.casino.blackjack.presentation.dto.Bet;
 import nl.hu.bep2.casino.blackjack.presentation.dto.GameID;
-import nl.hu.bep2.casino.chips.presentation.dto.Deposit;
+import nl.hu.bep2.casino.blackjack.presentation.dto.GameInfo;
 import nl.hu.bep2.casino.security.domain.UserProfile;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
@@ -25,13 +23,13 @@ public class GameController {
 
 
     @PostMapping("/start")
-    public long startGame(Authentication authentication, @Validated @RequestBody Bet bet) {
+    public long startGame(Authentication authentication, @Validated @RequestBody GameInfo gameInfo) {
             UserProfile profile = (UserProfile) authentication.getPrincipal();
             if (profile.getUsername() == null){
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             }
         try {
-            return gameService.startGame(bet.bet, profile.getUsername());
+            return gameService.startGame(gameInfo, profile.getUsername());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -100,8 +98,24 @@ public class GameController {
         }
     }
 
-    @DeleteMapping("/end")
-    public void endGame(Authentication authentication, @Validated @RequestBody GameID gameId) {
+    @PostMapping("/surrender")
+    public void surrender(Authentication authentication, @Validated @RequestBody GameID gameId) {
+        UserProfile profile = (UserProfile) authentication.getPrincipal();
+
+        if (profile.getUsername() == null){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        try {
+            gameService.surrender(gameId.gameid, profile.getUsername());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteGame(Authentication authentication, @Validated @RequestBody GameID gameId) {
         UserProfile profile = (UserProfile) authentication.getPrincipal();
 
         if (profile.getUsername() == null){

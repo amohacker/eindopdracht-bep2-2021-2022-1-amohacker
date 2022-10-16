@@ -4,8 +4,10 @@ import nl.hu.bep2.casino.blackjack.data.BlackjackGameRepository;
 import nl.hu.bep2.casino.blackjack.domain.*;
 import nl.hu.bep2.casino.blackjack.domain.exceptions.GameNotFoundException;
 import nl.hu.bep2.casino.blackjack.domain.exceptions.InsufficientBalanceException;
+import nl.hu.bep2.casino.blackjack.presentation.dto.GameInfo;
 import nl.hu.bep2.casino.chips.application.Balance;
 import nl.hu.bep2.casino.chips.application.ChipsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,24 +16,31 @@ import org.springframework.transaction.annotation.Transactional;
 public class GameService {
     private final BlackjackGameRepository blackjackGameRepository;
     private final ChipsService chipsService;
+    @Autowired
+    private final ModifierValidator modifierValidator;
 
     public BlackjackUserView getGameState(long gameId, String username){
         return new BlackjackUserView(getGame(gameId, username));
     }
 
-    public GameService(BlackjackGameRepository blackjackGameRepository, ChipsService chipsService) {
+    public GameService(BlackjackGameRepository blackjackGameRepository, ChipsService chipsService, ModifierValidator modifierValidator) {
         this.blackjackGameRepository = blackjackGameRepository;
         this.chipsService = chipsService;
+        this.modifierValidator = modifierValidator;
     }
 
-    public long startGame(long bet, String username) {
+    public long startGame(GameInfo gameInfo, String username) {
         Balance balance = chipsService.findBalance(username);
-        if (balance.getChips() >= bet){
-            Game game = new GameFactory().setBet(bet).setDefaultRules().setUsername(username).build();
-            chipsService.withdrawChips(username, bet);
+        if (balance.getChips() >= gameInfo.bet && modifierValidator.checkModifiers(gameInfo)){
+
+            Game game = new GameFactory()
+                    .setBet(gameInfo.bet).setDefaultRules().setUsername(username)
+                    .setNumberOfDecks(gameInfo.decks).setGoalScore(gameInfo.goalScore)
+                    .build();
+            chipsService.withdrawChips(username, gameInfo.bet);
             return saveGame(game);
         } else {
-            throw new InsufficientBalanceException("User only has " + balance.getChips() + " chips, needs " + bet + " chips.");
+            throw new InsufficientBalanceException("User only has " + balance.getChips() + " chips, needs " + gameInfo.bet + " chips.");
         }
     }
 
@@ -65,6 +74,14 @@ public class GameService {
             saveGame(game);
 
             payoutIfNeeded(game);
+        }
+    }
+
+    public void surrender(long gameId, String username){
+        Game game = getGame(gameId, username);
+        if (game.getState() == PlayerOutcome.CONTINUE){
+            chipsService.depositChips(username, (long) (game.getBet()/2));
+            deleteGame(game);
         }
     }
 

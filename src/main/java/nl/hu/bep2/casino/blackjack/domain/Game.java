@@ -27,15 +27,20 @@ public class Game implements Serializable {
     @Transient
     private Deck deck;
     private PlayerOutcome state;
+    private int numberOfDecks = 1;
 
-    public Game(Speler speler, long bet, ArrayList<Regel> regels, String username){
-        this.speler = speler;
-        this.deck = speler.getDeck();
+    private int doelScore = 21;
+
+    public Game(long bet, ArrayList<Regel> regels, String username, int numberOfDecks, int doelScore){
+        this.doelScore = doelScore;
+        this.numberOfDecks = numberOfDecks;
+        this.deck = new Deck(this.numberOfDecks);
         this.bet = bet;
         this.regels = regels;
+        this.speler = new Speler(deck);
         this.dealer = new Dealer(deck);
         this.speler.draw(2);
-        this.dealer.draw(1);
+        this.dealer.draw(1); //will draw another card during turn logic
         this.state = PlayerOutcome.CONTINUE;
         this.speler.setGame(this);
         this.dealer.setGame(this);
@@ -49,15 +54,17 @@ public class Game implements Serializable {
         regels.add(new RegelCheckLose());
         regels.add(new RegelCheckWin());
         regels.add(new RegelDealerDraw());
-
-        deck = new Deck();
     }
 
     @PostLoad
     public void unsleep(){
+        deck = new Deck(numberOfDecks);
         this.speler.setDeck(deck);
         this.dealer.setDeck(deck);
+        deck.removeCards(getDealerCards());
+        deck.removeCards(getPlayerCards());
     }
+
 
     public void hit(){
         if (state == PlayerOutcome.CONTINUE) {
@@ -87,11 +94,11 @@ public class Game implements Serializable {
     private void turn(){
         for (Regel regel: regels) {
             if (regel instanceof PlayPhaseRule)
-                regel.check(speler, dealer);
+                regel.check(speler, dealer, getModifiers());
         }
         for (Regel regel: regels) {
             if (regel instanceof WinConditionRule){
-                switch(regel.check(speler, dealer)){
+                switch(regel.check(speler, dealer, getModifiers())){
                     case WIN:
                         state = PlayerOutcome.WIN;
                         break;
@@ -181,5 +188,16 @@ public class Game implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getDoelScore() {
+        return doelScore;
+    }
+
+    public Modifiers getModifiers(){
+        return new Modifiers(
+                numberOfDecks,
+                doelScore
+        );
     }
 }

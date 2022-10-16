@@ -50,7 +50,7 @@ public abstract class Persoon {
     }
 
     public int getAmountOfCards() {
-        return getDeck().cards.size();
+        return hand.getCards().size();
     }
 
     @OneToMany

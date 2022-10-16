@@ -1,17 +1,14 @@
 package nl.hu.bep2.casino.blackjack.domain.rules;
 
-import nl.hu.bep2.casino.blackjack.domain.Dealer;
-import nl.hu.bep2.casino.blackjack.domain.PlayerOutcome;
-import nl.hu.bep2.casino.blackjack.domain.Persoon;
-import nl.hu.bep2.casino.blackjack.domain.Speler;
+import nl.hu.bep2.casino.blackjack.domain.*;
 
 public class RegelDealerDraw implements PlayPhaseRule {
 
     @Override
-    public PlayerOutcome check(Speler speler, Dealer dealer) {
-        if (dealer.score() >= 17)
+    public PlayerOutcome check(Speler speler, Dealer dealer, Modifiers modifiers) {
+        if (dealer.score() >= modifiers.getGoalScore()-4)
             dealer.stand();
-        if (dealer.score() < 17)
+        if (dealer.score() < modifiers.getGoalScore()-4)
             dealer.draw();
         return PlayerOutcome.CONTINUE;
     }

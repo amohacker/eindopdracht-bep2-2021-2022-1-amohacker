@@ -4,15 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Deck {
-    ArrayList<Card> cards;
+    private ArrayList<Card> cards;
 
-    public Deck(){
+    public Deck(int numberOfDecks){
         cards = new ArrayList<Card>();
-        for (Card.Rank rank : Card.Rank.values()){
-            for (Card.Suit suit : Card.Suit.values()){
-                cards.add(new Card(rank, suit));
+//        int cardsgenerated = 0;  //debugging tool
+            for (Card.Rank rank : Card.Rank.values()) {
+                for (Card.Suit suit : Card.Suit.values()) {
+                    for (int i = 0; i < numberOfDecks; i++) {
+                        cards.add(new Card(rank, suit));
+//                        cardsgenerated++;
+                    }
+                }
             }
-        }
+//        System.out.println("Cardsgenerated: " + cardsgenerated);
+//        System.out.println(cards);
     }
 
     public Card draw() {
@@ -28,5 +34,9 @@ public class Deck {
         for (Card card : toremove) {
             cards.remove(card);
         }
+    }
+
+    public int getNumberOfCards() {
+        return cards.size();
     }
 }

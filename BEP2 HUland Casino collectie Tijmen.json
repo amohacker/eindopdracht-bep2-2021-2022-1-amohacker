@@ -1,0 +1,489 @@
+{
+	"info": {
+		"_postman_id": "e56c41d8-0a9b-46a6-943a-9bfef2535312",
+		"name": "BEP2 HUland Casino",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17159143"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/hal+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\",\r\n    \"firstName\": \"Ad\",\r\n    \"lastName\": \"Min\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/register",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    const authHeader = pm.response.headers.get(\"Authorization\");\r",
+									"    const token = authHeader.substring(7);\r",
+									"    pm.collectionVariables.set(\"authToken\", token);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/hal+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "chips",
+			"item": [
+				{
+					"name": "Show balance",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/chips/balance",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chips",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Make deposit (for development)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"amount\": 1000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chips/deposit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chips",
+								"deposit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Make withdrawal (for development)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"amount\": 1000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chips/withdrawal",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chips",
+								"withdrawal"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "blackjack",
+			"item": [
+				{
+					"name": "start",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bet\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blackjack/start",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blackjack",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "start modified",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bet\": 10,\r\n    \"decks\": 4,\r\n    \"goalScore\": 50\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blackjack/start",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blackjack",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "hit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"gameid\": 168\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blackjack/hit",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blackjack",
+								"hit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "surrender",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"gameid\": 13\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blackjack/surrender",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blackjack",
+								"surrender"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "double down",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"gameid\": 43\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blackjack/double",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blackjack",
+								"double"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stand",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"gameid\": 173\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blackjack/stand",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blackjack",
+								"stand"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "end",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"gameid\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blackjack/delete",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blackjack",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "doubledown",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"gameid\": 28\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blackjack/double",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blackjack",
+								"double"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "state",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"gameid\": 43\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/blackjack/state",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blackjack",
+								"state"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "authToken",
+			"value": ""
+		}
+	]
+}

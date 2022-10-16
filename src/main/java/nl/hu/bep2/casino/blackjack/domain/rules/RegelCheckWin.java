@@ -1,23 +1,20 @@
 package nl.hu.bep2.casino.blackjack.domain.rules;
 
-import nl.hu.bep2.casino.blackjack.domain.Dealer;
-import nl.hu.bep2.casino.blackjack.domain.PlayerOutcome;
-import nl.hu.bep2.casino.blackjack.domain.Persoon;
-import nl.hu.bep2.casino.blackjack.domain.Speler;
+import nl.hu.bep2.casino.blackjack.domain.*;
 
 public class RegelCheckWin implements WinConditionRule {
 
     @Override
-    public PlayerOutcome check(Speler speler, Dealer dealer) {
+    public PlayerOutcome check(Speler speler, Dealer dealer, Modifiers modifiers) {
         if (speler.getAmountOfCards() <= 2) {
             return PlayerOutcome.CONTINUE;
         }
-        if (speler.score() == 21 && dealer.isStanding()){
+        if (speler.score() == modifiers.getGoalScore() && dealer.isStanding()){
             return PlayerOutcome.WIN;
         }
-        if (speler.isStanding() && dealer.isStanding() && speler.score() > dealer.score() && speler.score() <= 21)
+        if (speler.isStanding() && dealer.isStanding() && speler.score() > dealer.score() && speler.score() <= modifiers.getGoalScore())
             return PlayerOutcome.WIN;
-        if (speler.score() <= 21 && dealer.score()>21){
+        if (speler.score() <= modifiers.getGoalScore() && dealer.score()>modifiers.getGoalScore()){
             return PlayerOutcome.WIN;
         }
         return  PlayerOutcome.CONTINUE;
