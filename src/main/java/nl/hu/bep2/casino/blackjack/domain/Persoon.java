@@ -1,7 +1,6 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Persoon {
@@ -17,7 +16,7 @@ public abstract class Persoon {
     @Transient
     private boolean standing = false;
 
-    public Persoon(Deck deck) {
+    public Persoon(StandardDeck deck) {
         this.hand = new Hand(deck);
     }
 
@@ -45,9 +44,6 @@ public abstract class Persoon {
         return hand.getFirstCard();
     }
 
-    public Deck getDeck() {
-        return hand.getDeck();
-    }
 
     public int getAmountOfCards() {
         return hand.getCards().size();
@@ -58,10 +54,6 @@ public abstract class Persoon {
         return hand.getCards();
     }
 
-    public void setCards(ArrayList<Card> cards){
-        hand.setCards(cards);
-    }
-
     public Game getGame() {
         return game;
     }
@@ -70,8 +62,7 @@ public abstract class Persoon {
         this.game = game;
     }
 
-
-    public void setDeck(Deck deck) {
+    public void setDeck(StandardDeck deck) {
         this.hand.setDeck(deck);
     }
 

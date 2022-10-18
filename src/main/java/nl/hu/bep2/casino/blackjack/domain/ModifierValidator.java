@@ -1,5 +1,6 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
+import nl.hu.bep2.casino.blackjack.domain.exceptions.InvalidModifierException;
 import nl.hu.bep2.casino.blackjack.presentation.dto.GameInfo;
 import org.springframework.stereotype.Component;
 
@@ -12,18 +13,42 @@ public class ModifierValidator {
     public boolean checkModifiers(Modifiers modifiers){
         if (
                 decksCheck(modifiers.getDecks()) &&
-                        scoreCheck(modifiers.getGoalScore())
+                        scoreCheck(modifiers.getGoalScore()) &&
+                        deckTypeCheck(modifiers.getDeckType())
+
         ) {
             return true;
         } else {
             return false;
         }
     }
-    public boolean checkModifiers(GameInfo gameInfo){
-        return checkModifiers(new Modifiers(
+
+    private boolean deckTypeCheck(DeckType deckType) {
+        if (deckType != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Modifiers checkModifiers(GameInfo gameInfo){
+        DeckType deckType = null;
+        switch (gameInfo.deckType){
+            case "standard":
+                deckType = DeckType.STANDARD;
+                break;
+        }
+
+        Modifiers modifiers = new Modifiers(
                 gameInfo.decks,
-                gameInfo.goalScore
-        ));
+                gameInfo.goalScore,
+                deckType
+        );
+        if ( checkModifiers(modifiers)) {
+          return modifiers;
+        } else {
+            throw new InvalidModifierException();
+        }
     }
 
     private boolean decksCheck(int decks) {

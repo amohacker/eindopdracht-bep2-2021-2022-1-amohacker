@@ -6,7 +6,7 @@ public class RegelCheckWin implements WinConditionRule {
 
     @Override
     public PlayerOutcome check(Speler speler, Dealer dealer, Modifiers modifiers) {
-        if (speler.getAmountOfCards() <= 2) {
+        if (speler.score() == modifiers.getGoalScore() && speler.getAmountOfCards() == 2) {
             return PlayerOutcome.CONTINUE;
         }
         if (speler.score() == modifiers.getGoalScore() && dealer.isStanding()){

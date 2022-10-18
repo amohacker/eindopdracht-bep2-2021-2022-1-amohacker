@@ -1,8 +1,6 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
 import nl.hu.bep2.casino.blackjack.domain.rules.*;
-import nl.hu.bep2.casino.chips.application.ChipsService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,13 +26,13 @@ public class Game implements Serializable {
     private Deck deck;
     private PlayerOutcome state;
     private int numberOfDecks = 1;
-
+    private DeckType deckType = DeckType.STANDARD;
     private int doelScore = 21;
 
-    public Game(long bet, ArrayList<Regel> regels, String username, int numberOfDecks, int doelScore){
+    public Game(long bet, ArrayList<Regel> regels, String username, int numberOfDecks, int doelScore, Deck deck){
         this.doelScore = doelScore;
         this.numberOfDecks = numberOfDecks;
-        this.deck = new Deck(this.numberOfDecks);
+        this.deck = deck;
         this.bet = bet;
         this.regels = regels;
         this.speler = new Speler(deck);
@@ -53,12 +51,12 @@ public class Game implements Serializable {
         regels = new ArrayList<>();
         regels.add(new RegelCheckLose());
         regels.add(new RegelCheckWin());
-        regels.add(new RegelDealerDraw());
+        regels.add(new RegelDealerAction());
     }
 
     @PostLoad
-    public void unsleep(){
-        deck = new Deck(numberOfDecks);
+    private void unsleep(){
+        deck = new DeckFactory().createDeck(getModifiers());
         this.speler.setDeck(deck);
         this.dealer.setDeck(deck);
         deck.removeCards(getDealerCards());
@@ -82,8 +80,7 @@ public class Game implements Serializable {
 
     public void doubleDown(){
         if (state == PlayerOutcome.CONTINUE) {
-            speler.draw();
-            speler.stand();
+            speler.doubleDown();
             bet = bet * 2;
             while (state.equals(PlayerOutcome.CONTINUE)){
                 turn();
@@ -122,6 +119,7 @@ public class Game implements Serializable {
 
     @Transient
     public List<Card> getPlayerCards(){
+
         return speler.getCards();
     }
 
@@ -158,20 +156,8 @@ public class Game implements Serializable {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public int getDoelScore() {
-        return doelScore;
     }
 
     public Modifiers getModifiers(){

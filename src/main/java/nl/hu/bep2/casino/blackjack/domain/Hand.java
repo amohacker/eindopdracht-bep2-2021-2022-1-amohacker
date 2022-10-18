@@ -2,7 +2,6 @@ package nl.hu.bep2.casino.blackjack.domain;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,15 +40,8 @@ public class Hand implements Serializable {
     }
 
     public List<Card> getCards(){
-        ArrayList<Card> cardArrayList = new ArrayList<>();
-        for (Card card : drawn) {
-            cardArrayList.add(card);
-        }
+        ArrayList<Card> cardArrayList = new ArrayList<>(drawn);
         return cardArrayList;
-    }
-
-    public Deck getDeck() {
-        return deck;
     }
 
     private int collapseAcesIfNeeded(int score, int aces){
@@ -68,10 +60,6 @@ public class Hand implements Serializable {
                 num += 1;
         }
         return num;
-    }
-
-    public void setCards(ArrayList<Card> cards){
-        this.drawn = cards;
     }
 
     public void setDeck(Deck deck) {

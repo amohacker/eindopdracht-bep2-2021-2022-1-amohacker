@@ -31,11 +31,12 @@ public class GameService {
 
     public long startGame(GameInfo gameInfo, String username) {
         Balance balance = chipsService.findBalance(username);
-        if (balance.getChips() >= gameInfo.bet && modifierValidator.checkModifiers(gameInfo)){
-
-            Game game = new GameFactory()
+        if (balance.getChips() >= gameInfo.bet){
+            Modifiers modifiers = modifierValidator.checkModifiers(gameInfo);
+            Game game = new GameBuilder()
                     .setBet(gameInfo.bet).setDefaultRules().setUsername(username)
-                    .setNumberOfDecks(gameInfo.decks).setGoalScore(gameInfo.goalScore)
+                    .setNumberOfDecks(modifiers.getDecks()).setGoalScore(modifiers.getGoalScore())
+                    .setDeckType(modifiers.getDeckType())
                     .build();
             chipsService.withdrawChips(username, gameInfo.bet);
             return saveGame(game);

@@ -9,4 +9,6 @@ public class GameInfo {
     public long bet;
     public int decks = 1;
     public int goalScore = 21;
+
+    public String deckType = "standard";
 }

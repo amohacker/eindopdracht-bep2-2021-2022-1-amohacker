@@ -1,12 +1,7 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.collection.internal.PersistentBag;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
