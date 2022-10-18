@@ -77,4 +77,8 @@ public class Hand implements Serializable {
     public void setDeck(Deck deck) {
         this.deck = deck;
     }
+
+    public int getNumberOfCards() {
+        return drawn.size();
+    }
 }

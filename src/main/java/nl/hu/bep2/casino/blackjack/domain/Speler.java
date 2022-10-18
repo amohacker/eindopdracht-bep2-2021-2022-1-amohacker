@@ -66,17 +66,14 @@ public class Speler implements Serializable {
         return hand.getFirstCard();
     }
 
-    public Deck getDeck() {
-        return hand.getDeck();
-    }
-
     public int getAmountOfCards() {
-        return getCards().size();
+        return hand.getNumberOfCards();
     }
 
     public List<Card> getCards(){
         return hand.getCards();
     }
+
     public void setGame(Game game) {
         this.game = game;
     }

@@ -53,20 +53,12 @@ public class Dealer implements Serializable {
         return hand.getFirstCard();
     }
 
-    public Deck getDeck() {
-        return hand.getDeck();
-    }
-
     public int getAmountOfCards() {
-        return getCards().size();
+        return hand.getNumberOfCards();
     }
 
     public List<Card> getCards(){
         return hand.getCards();
-    }
-
-    public Game getGame() {
-        return game;
     }
 
     public void setGame(Game game) {
