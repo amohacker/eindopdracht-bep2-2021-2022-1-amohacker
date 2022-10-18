@@ -154,26 +154,6 @@ public class Game implements Serializable {
         return dealer.getCards();
     }
 
-    public Dealer getDealer() {
-        return dealer;
-    }
-
-    public void setDealer(Dealer dealer) {
-        this.dealer = dealer;
-        this.dealer.setDeck(deck);
-        deck.removeCards(dealer.getCards());
-    }
-
-    public Speler getSpeler() {
-        return speler;
-    }
-
-    public void setSpeler(Speler speler) {
-        this.speler = speler;
-        this.speler.setDeck(deck);
-        deck.removeCards(speler.getCards());
-    }
-
     public long getId() {
         return id;
     }
